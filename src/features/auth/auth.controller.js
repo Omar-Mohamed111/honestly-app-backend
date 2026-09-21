@@ -35,7 +35,12 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     const token = await authService.login(email, password);
 
-    res.cookie("access_token", token, { httpOnly: true });
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
     res.status(200).json({
       message: "You are logged in successfully",
     });
@@ -50,7 +55,12 @@ const login = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
-    res.clearCookie("assess_token");
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
     res.status(200).json({
       message: "Logged out successfully",
     });
@@ -58,7 +68,6 @@ const logout = async (req, res, next) => {
     next(error);
   }
 };
-
 // ******************
 // Foreget And Rest Password
 // ******************

@@ -24,7 +24,7 @@ const errorHandler = require("./middleware/error.middleware");
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://honestly-app-frontend.vercel.app",
     credentials: true,
   }),
 );
