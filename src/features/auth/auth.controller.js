@@ -5,7 +5,7 @@ const authService = require("./auth.service");
 // ******************
 const createUser = async (req, res, next) => {
   try {
-    const user = await authService.createUser(req.body);
+    await authService.createUser(req.body);
     res.status(201).json({
       message: "Registration successful. Please verify your email.",
     });
@@ -44,6 +44,7 @@ const login = async (req, res, next) => {
     res.status(200).json({
       message: "You are logged in successfully",
     });
+    
   } catch (error) {
     next(error);
   }

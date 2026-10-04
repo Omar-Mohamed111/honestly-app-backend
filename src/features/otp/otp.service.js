@@ -1,7 +1,8 @@
 const otpRepository = require("./otp.repository");
-const { sendEmail } = require("./mail.service");
+const { sendEmail } = require("../../lib/email/mail.service");
 const crypto = require("crypto");
-const otpTemplate = require("./otp.tamplate");
+const otpTemplate = require("./otp.template");
+const otpErrors = require("./otp.errors");
 
 // // generateOTP
 const generateOTP = () => {
@@ -40,35 +41,25 @@ const verifyOTP = async (userId, otp, purpose) => {
   const storedOTP = await otpRepository.findOTP(userId, purpose);
 
   if (!storedOTP) {
-    const error = new Error("OTP Not Found");
-    error.statusCode = 404;
-    throw error;
+    throw otpErrors.otpNotFound();
   }
 
   if (Date.now() > storedOTP.expiresAt.getTime()) {
-    const error = new Error("OTP Expired");
-    error.statusCode = 410;
-    throw error;
+    throw otpErrors.otpExpired();
   }
 
   if (storedOTP.attempts >= 5) {
-    const error = new Error("Too Many OTP Attempts");
-    error.statusCode = 429;
-    throw error;
+    throw otpErrors.tooManyAttempts();
   }
 
   if (otp !== storedOTP.otp) {
     const updatedOTP = await otpRepository.incrementAttempts(userId, purpose);
 
     if (updatedOTP.attempts >= 5) {
-      const error = new Error("Too Many OTP Attempts");
-      error.statusCode = 429;
-      throw error;
+      throw otpErrors.tooManyAttempts();
     }
 
-    const error = new Error("Invalid OTP");
-    error.statusCode = 401;
-    throw error;
+    throw otpErrors.invalidOTP();
   }
 
   await otpRepository.deleteOTP(userId, purpose);

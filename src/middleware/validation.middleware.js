@@ -1,6 +1,7 @@
-
 const validate = (schema, source = "body") => {
+
   return (req, res, next) => {
+    
     const result = schema.safeParse(req[source]);
 
     if (!result.success) {
@@ -11,6 +12,7 @@ const validate = (schema, source = "body") => {
 
     next();
   };
+
 };
 
 module.exports = validate;

@@ -1,15 +1,22 @@
+const AppError = require("../lib/error/error");
+const logger = require("..//pkg/logger/logger");
 
+const errorHandler = (err, req, res, next) => {
+  logger.error(err.message, {
+    statusCode: err.statusCode,
+    stack: err.stack,
+  });
 
-const errorHandler = (err,req,res,next) => {
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
+      message: err.message,
+      errors: err.error,
+    });
+  }
 
-    const statusCode = err.statusCode || 500
+  return res.status(500).json({
+    message: "Internal Server Error",
+  });
+};
 
-    res.status(statusCode).json({
-        message: err.message || "Internal Server Error"
-    })
-
-}
-
-
-
-module.exports = errorHandler
+module.exports = errorHandler;

@@ -1,12 +1,12 @@
 const messageRepository = require("./message.repository");
 const userRepository = require("./../users/users.repository");
+const messageErrors = require("./message.errors");
+const { getCache, setCache, deleteCache } = require("../../pkg/cache/cache");
 
 const createMessage = async (data, sender) => {
   const receiver = await userRepository.findUserById(data.receiver);
   if (!receiver) {
-    const error = new Error("Receiver Not Found");
-    error.statusCode = 404;
-    throw error;
+    throw messageErrors.receiverNotFound();
   }
 
   const messageData = {
@@ -24,20 +24,32 @@ const createMessage = async (data, sender) => {
     );
 
     if (!repliedMessage) {
-      const error = new Error("Message To Reply Not Found");
-      error.statusCode = 404;
-      throw error;
+      throw messageErrors.messageToReplyNotFound();
     }
   }
 
   const message = await messageRepository.createMessage(messageData);
+  await deleteCache(`messages:${data.receiver}`);
+
   return message;
 };
 
 // ************************************
 
 const getMessages = async (userId) => {
+  const cacheKey = `messages:${userId}`;
+
+  const cachedMessages = await getCache(cacheKey);
+  if (cachedMessages) {
+    console.log("CACHE HIT ✅");
+
+    return cachedMessages;
+  }
+
   const messages = await messageRepository.findMessagesByReceiver(userId);
+
+  await setCache(cacheKey, messages, 60);
+  console.log("CACHE MISS ✅");
 
   return messages;
 };
