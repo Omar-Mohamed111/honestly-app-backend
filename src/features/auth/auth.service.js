@@ -21,6 +21,8 @@ const createUser = async (data) => {
   return user;
 };
 
+// ===========================
+
 const verifyOTP = async (email, otp) => {
   const user = await userRepository.findUserByEmail(email);
   if (!user) {
@@ -38,7 +40,6 @@ const verifyOTP = async (email, otp) => {
 // ******************
 // Login
 // ******************
-
 const login = async (email, password) => {
   const user = await userRepository.findUserByEmail(email);
   if (!user) {

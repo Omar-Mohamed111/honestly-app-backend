@@ -1,4 +1,4 @@
-const AppError = require("../../lib/error/error");
+const AppError = require("../../pkg/utils/error/AppError");
 
 const messageErrors = {
   receiverNotFound: () => new AppError("Receiver Not Found", 404),

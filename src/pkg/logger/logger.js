@@ -1,13 +1,15 @@
 const logger = {
+  
   log(level, message, metadata) {
-    const logData = {
+    
+    const messageObj = {
       timestamp: new Date().toISOString(),
       level,
       message,
       metadata,
     };
 
-    console.log(logData);
+    console.log(JSON.stringify(messageObj));
   },
 
   error(message, metadata) {
@@ -16,7 +18,7 @@ const logger = {
 
   info(message, metadata) {
     this.log("info", message, metadata);
-  },
+  }, 
 
   debug(message, metadata) {
     this.log("debug", message, metadata);

@@ -9,11 +9,17 @@ const loginSchema = require("./validation/login.validation");
 const verifyOTPSchema = require("./validation/verify-otp.validation");
 const forgotPasswordSchema = require("./validation/forgot-password.validation");
 const resetPasswordSchema = require("./validation/reset-password.validation");
+const idempotency = require("../../lib/idempotency/idempotency");
 
 router.post("/register", validate(registerSchema), authController.createUser);
 
-router.post("/verify-otp", validate(verifyOTPSchema), authController.verifyOTP);
-
+router.post(
+  "/verify-otp",
+  idempotency(),
+  validate(verifyOTPSchema),
+  authController.verifyOTP,
+);
+  
 router.post("/login", validate(loginSchema), authController.login);
 
 router.post(

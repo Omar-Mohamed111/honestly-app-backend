@@ -1,4 +1,4 @@
-const AppError = require("../../lib/error/error");
+const AppError = require("../../pkg/utils/error/AppError");
 
 const otpErrors = {
   otpNotFound: () => new AppError("OTP Not Found", 404),

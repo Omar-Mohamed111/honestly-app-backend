@@ -4,8 +4,9 @@ const authenticate = require("../../middleware/auth.middleware");
 const messagesController = require("./message.controller");
 const validate = require("../../middleware/validation.middleware");
 const createMessageSchema = require("./validation/create-message.validation");
+const idempotency = require("../../lib/idempotency/idempotency");
 
-router.post("/",  authenticate,validate(createMessageSchema), messagesController.createMessage);
+router.post("/",idempotency(),  authenticate,validate(createMessageSchema), messagesController.createMessage);
 
 router.get("/", authenticate, messagesController.getMessages);
 

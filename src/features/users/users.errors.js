@@ -1,4 +1,4 @@
-const AppError = require("../../lib/error/error");
+const AppError = require("../../pkg/utils/error/AppError");
 
 const userErrors = {
   userNotFound: () => new AppError("User not found", 404),

@@ -9,7 +9,7 @@ const createUser = async (data) => {
 };
 
 const verifyUser = async (userId) => {
-  return await User.findByIdAndUpdate(userId, { isVerified: true });
+  return await User.findByIdAndUpdate(userId, { isVerified: true },{returnDocument:"after"});
 };
 
 const findUserById = async (userId) => {

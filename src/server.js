@@ -1,10 +1,20 @@
-require("dotenv").config();
 const app = require("./app");
-const PORT = process.env.PORT || 3000;
+const env = require("./lib/config/env");
+const http = require("http");
 
 const connectDB = require("./lib/db/db");
+const logger = require("./pkg/logger/logger");
+const { default: mongoose } = require("mongoose");
 connectDB();
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} ✅`);
-});
+const server = http.createServer(app);
+server.listen(env.port, () => logger.info("server running in port 3000 ✅"));
+
+async function shutdown() {
+  server.close(async () => {
+    await mongoose.disconnect();
+    process.exit(0);
+  });
+}
+process.on("SIGINT", shutdown); // // crtl +   c
+process.on("SIGTERM", shutdown);

@@ -1,7 +1,7 @@
 const messageRepository = require("./message.repository");
 const userRepository = require("./../users/users.repository");
 const messageErrors = require("./message.errors");
-const { getCache, setCache, deleteCache } = require("../../pkg/cache/cache");
+const cacheProvider = require("../../lib/cache/init");
 
 const createMessage = async (data, sender) => {
   const receiver = await userRepository.findUserById(data.receiver);
@@ -29,28 +29,14 @@ const createMessage = async (data, sender) => {
   }
 
   const message = await messageRepository.createMessage(messageData);
-  await deleteCache(`messages:${data.receiver}`);
-
+  await cacheProvider.del(`messages:${data.receiver}`);
   return message;
 };
 
 // ************************************
 
 const getMessages = async (userId) => {
-  const cacheKey = `messages:${userId}`;
-
-  const cachedMessages = await getCache(cacheKey);
-  if (cachedMessages) {
-    console.log("CACHE HIT ✅");
-
-    return cachedMessages;
-  }
-
   const messages = await messageRepository.findMessagesByReceiver(userId);
-
-  await setCache(cacheKey, messages, 60);
-  console.log("CACHE MISS ✅");
-
   return messages;
 };
 

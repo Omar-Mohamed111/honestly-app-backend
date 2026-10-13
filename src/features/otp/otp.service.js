@@ -14,7 +14,7 @@ const generateExpiration = () => {
   return new Date(Date.now() + 5 * 60 * 1000);
 };
 
-//  // createOTP  AND send otp to email
+// // createOTP  AND send otp to email
 const createOTP = async (userId, purpose, email) => {
   const otp = generateOTP();
   const expiresAt = generateExpiration();
@@ -29,7 +29,7 @@ const createOTP = async (userId, purpose, email) => {
 
   await sendEmail(
     email, // to
-    "Honestly App - Email Verification", // subject
+    "Honestly App", // subject
     html, // html
   );
 
@@ -38,6 +38,7 @@ const createOTP = async (userId, purpose, email) => {
 
 // // verifyOTP
 const verifyOTP = async (userId, otp, purpose) => {
+  
   const storedOTP = await otpRepository.findOTP(userId, purpose);
 
   if (!storedOTP) {

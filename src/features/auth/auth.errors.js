@@ -1,4 +1,4 @@
-const AppError = require("../../lib/error/error");
+const AppError = require("../../pkg/utils/error/AppError");
 
 const authErrors = {
   emailAlreadyExists: () => new AppError("Email Already Exist", 409),
